@@ -10,7 +10,7 @@ import java.io.IOException;
 
 public class Main {
 
-    static TelegramBot bot = new TelegramBot("5210945620:AAGkG75_nZ2YLHf03tTaskXKnZevlJkBOQc");
+    static TelegramBot bot = new TelegramBot("***");
 
     public static void main(String[] args) {
 
