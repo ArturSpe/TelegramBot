@@ -2,15 +2,15 @@ package UserState;
 
 public enum State {
 
-    Check_groups,
-    Save_groups,
+    checkGroups,
+    saveGroups,
 
-    Check_groups_word,
-    Check_word,
-    Save_word,
+    checkGroupsWord,
+    checkWord,
+    saveWord,
 
-    Check_groups_phrase,
-    Check_phrase,
-    Save_phrase
+    checkGroupsPhrase,
+    checkPhrase,
+    savePhrase
 
 }

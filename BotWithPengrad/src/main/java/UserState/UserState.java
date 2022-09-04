@@ -7,13 +7,13 @@ public class UserState {
 
     private HashMap<Long, State> userStateMap = new HashMap<>();
 
-    public void setUserState (long userId, State state) throws IOException {
+    public void setUserState (long userId, State state) {
 
         this.userStateMap.put(userId, state);
 
     }
 
-    public boolean checkUserState (long userId, State state) throws IOException{
+    public boolean checkUserState (long userId, State state) {
 
         boolean check = false;
 

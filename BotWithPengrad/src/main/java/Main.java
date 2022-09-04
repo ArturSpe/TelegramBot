@@ -10,7 +10,7 @@ import java.io.IOException;
 
 public class Main {
 
-    static TelegramBot bot = new TelegramBot("***");
+    static TelegramBot bot = new TelegramBot("5210945620:AAGkG75_nZ2YLHf03tTaskXKnZevlJkBOQc");
 
     public static void main(String[] args) {
 
@@ -20,10 +20,11 @@ public class Main {
 
             updates.forEach(update -> {
 
+                UserMetaData userMetaData = new UserMetaData(update);
 
-                long chatId = GetChatId.getChatId(update);
-                long userId = GetUserId.getUserId(update);
-                int messageId = GetMessageId.getMessageId(update);
+                long chatId = userMetaData.getChatId();
+                long userId = userMetaData.getUserId();
+                int messageId = userMetaData.getMessageId();
 
                 try {
 
@@ -57,7 +58,7 @@ public class Main {
 
                     }
 
-                }catch (IOException e){
+                }catch (Exception e){
 
                     e.printStackTrace();
                     System.exit(0);

@@ -7,15 +7,15 @@ import java.io.IOException;
 
 abstract public class CommandProcessing {
 
-        public static void changeStateByCommand(TelegramBot bot, long chatId, long userId,  int messageId, UserState userState, String command) throws IOException {
+        public static void changeStateByCommand(TelegramBot bot, long chatId, long userId,  int messageId, UserState userState, String command) {
 
         if (BotCommands.thisCommand(command, "/append_word") == true){
 
-            userState.setUserState(userId, State.Check_groups_word);
+            userState.setUserState(userId, State.checkGroupsWord);
 
         } else if (BotCommands.thisCommand(command, "/append_phrase") == true) {
 
-            userState.setUserState(userId, State.Check_groups_phrase);
+            userState.setUserState(userId, State.checkGroupsPhrase);
 
         } else if (BotCommands.thisCommand(command, "/end")) {
 
