@@ -7,11 +7,13 @@ import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.UpdatesListener;
 import java.io.FileInputStream;
 import java.util.Properties;
+import WorkWithSql.workingWithJdbc;
 
 
 public class Main {
 
     static String BOT_TOKEN;
+    static String DB_URL;
 
     public static void main(String[] args) {
 
@@ -21,6 +23,7 @@ public class Main {
             Properties properties = new Properties();
             properties.load(propertiesFile);
             BOT_TOKEN = properties.getProperty("TELEGRAM_BOT_TOKEN");
+            DB_URL = properties.getProperty("DB_URL");
 
         }catch (Exception e){
 
@@ -29,8 +32,9 @@ public class Main {
         }
 
         TelegramBot bot = new TelegramBot(BOT_TOKEN);
-
+        workingWithJdbc withJdbc = new workingWithJdbc(DB_URL);
         UserState userState = new UserState();
+
 
         bot.setUpdatesListener(updates -> {
 
@@ -65,9 +69,9 @@ public class Main {
 
                         if (update.message().text().equals("2") && userState.emptyUserState(userId) == true) {
 
-                            String[] key = {"Кнопка 1", "Кнопка 2", "Кнопка 3"};
+                            String[] key = withJdbc.getPackages();
                             MessageSender messageSender = new MessageSender("Клавиатура");
-                            Keyboards.InlineKeyBoardTeleBot keyBoardTeleBot = new InlineKeyBoardTeleBot(key, 2);
+                            Keyboards.InlineKeyBoardTeleBot keyBoardTeleBot = new InlineKeyBoardTeleBot(key, 3);
                             messageSender.Send(bot, chatId, keyBoardTeleBot);
 
                         }
