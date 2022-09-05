@@ -5,14 +5,30 @@ import Messages.MessageSender;
 import UserState.UserState;
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.UpdatesListener;
+import java.io.FileInputStream;
+import java.util.Properties;
 
-import java.io.IOException;
 
 public class Main {
 
-    static TelegramBot bot = new TelegramBot("5210945620:AAGkG75_nZ2YLHf03tTaskXKnZevlJkBOQc");
+    static String BOT_TOKEN;
 
     public static void main(String[] args) {
+
+        try {
+
+            FileInputStream propertiesFile = new FileInputStream("src\\main\\resources\\config.properties");
+            Properties properties = new Properties();
+            properties.load(propertiesFile);
+            BOT_TOKEN = properties.getProperty("TELEGRAM_BOT_TOKEN");
+
+        }catch (Exception e){
+
+            e.printStackTrace();
+
+        }
+
+        TelegramBot bot = new TelegramBot(BOT_TOKEN);
 
         UserState userState = new UserState();
 
