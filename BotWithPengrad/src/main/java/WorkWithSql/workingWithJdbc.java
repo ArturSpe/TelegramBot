@@ -1,8 +1,5 @@
 package WorkWithSql;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+import java.sql.*;
 import java.util.ArrayList;
 
 public class workingWithJdbc implements dataBaseCommands {
@@ -28,9 +25,12 @@ public class workingWithJdbc implements dataBaseCommands {
         ResultSet resultSet = statement.getResultSet();
         ArrayList<String>packages = new ArrayList<>();
 
-        while (resultSet.next()){
+        if (resultSet.isBeforeFirst()){
+            while (resultSet.next()) {
 
-            packages.add(resultSet.getString(1));
+                packages.add(resultSet.getString(1));
+
+            }
 
         }
 
@@ -43,24 +43,81 @@ public class workingWithJdbc implements dataBaseCommands {
     }
 
     @Override
-    public String getPackage (String x) {
+    public String getPackage (String wordOrPhrase) throws Exception {
 
-        return x;
+        String x = wordOrPhrase.toLowerCase();
+        String result = "Совпадений не обнаружено";
+        Connection connection = getConnection();
+        PreparedStatement statement = connection.prepareStatement("SELECT package from packages" +
+                                                                        "WHERE id_package = (SELECT id_package FROM words WHERE word = ?)" +
+                                                                        "OR id_package = (SELECT id_package FROM phrase WHERE phrase = ?)");
+        statement.setString(1, x);
+        statement.setString(2, x);
+        statement.execute();
+        ResultSet resultSet = statement.getResultSet();
+
+        if (resultSet.isBeforeFirst()){
+
+            result = resultSet.getString(1);
+
+        }
+
+        connection.close();
+        return result;
 
     }
 
     @Override
-    public String[] getWords (){
+    public ArrayList<String> getWords (String group) throws Exception{
 
-        String[] x = {""};
-        return x;
+        String x = group.toUpperCase();
+        Connection connection = getConnection();
+        PreparedStatement statement = connection.prepareStatement("SELECT word FROM words NATURAL JOIN packages WHERE package = ?");
+        statement.setString(1, x);
+        statement.execute();
+        ResultSet resultSet = statement.getResultSet();
+        ArrayList<String>words = new ArrayList<>();
+
+        if (resultSet.isBeforeFirst()){
+            while (resultSet.next()) {
+
+                words.add(resultSet.getString(1));
+
+            }
+
+        }
+
+        connection.close();
+        return words;
 
     }
 
     @Override
-    public String getPhrase (String group){
+    public String getPhrase (String sentence) throws Exception{
 
-        return "1";
+        String toLowerSentence = sentence.toLowerCase().replaceAll("[^\\p{L}\\s]+", "");
+        String [] sentenceToArray = toLowerSentence.split(" ");
+        ArrayList<String> stringArrayList = new ArrayList<>(sentenceToArray.length);
+        for (String word: sentenceToArray){
+
+            stringArrayList.add("\"" + word + "\"");
+
+        }
+        String queryWords = String.join(", ", stringArrayList);
+
+        Connection connection = getConnection();
+        String query = "SELECT phrase FROM phrase NATURAL JOIN words WHERE word IN (" + queryWords + ") ORDER BY RANDOM() LIMIT 1";
+        Statement statement = connection.createStatement();
+        ResultSet resultSet = statement.executeQuery(query);
+
+        String phrase = "";
+        if (resultSet.isBeforeFirst()){
+
+            phrase = resultSet.getString(1);
+
+        }
+        connection.close();
+        return phrase;
 
     }
 

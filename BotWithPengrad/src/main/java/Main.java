@@ -76,6 +76,14 @@ public class Main {
 
                         }
 
+                        if (userState.emptyUserState(userId) == true && update.message().text() != null){
+
+                            String q = update.message().text();
+                            MessageSender messageSender= new MessageSender(withJdbc.getPhrase(update.message().text()));
+                            messageSender.Send(bot, chatId, messageId);
+
+                        }
+
                     }
 
                 }catch (Exception e){
