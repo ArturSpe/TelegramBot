@@ -5,18 +5,18 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 
-public class WorkingRunBotWithJdbc implements DataBaseRunBot {
+public class DataForRunBotWithJdbc implements IDataBaseRunBot {
 
     private String dbWithBotsUrl;
 
 
-    public WorkingRunBotWithJdbc (String dbWithBotsUrl){
+    public DataForRunBotWithJdbc(String dbWithBotsUrl){
 
         this.dbWithBotsUrl = dbWithBotsUrl;
 
     }
     @Override
-    public ArrayList < String[] > getDataForBot() throws Exception{
+    public ArrayList <DataRunBotJdbc> getDataForBot() throws Exception{
 
         WorkingWithJdbc withJdbc = new WorkingWithJdbc(dbWithBotsUrl);
         Connection connection = withJdbc.getConnection();
@@ -24,12 +24,12 @@ public class WorkingRunBotWithJdbc implements DataBaseRunBot {
         statement.execute();
         ResultSet resultSet = statement.getResultSet();
 
-        ArrayList<String[]> listArrayList = new ArrayList<>();
+        ArrayList<DataRunBotJdbc> listArrayList = new ArrayList<>();
 
         while (resultSet.next()){
 
-            String[] strings = {resultSet.getString(2), resultSet.getString(3)};
-            listArrayList.add(strings);
+            DataRunBotJdbc dataSqlBot = new DataRunBotJdbc(resultSet.getString(2), resultSet.getString(3));
+            listArrayList.add(dataSqlBot);
 
         }
 

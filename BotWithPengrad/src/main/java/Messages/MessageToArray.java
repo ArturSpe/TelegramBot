@@ -7,12 +7,18 @@ public abstract class MessageToArray {
 
     public static ArrayList<String> messageToArrayWithApostrophes (String sentence) {
 
-        String toLowerSentence = sentence.toLowerCase().replaceAll("[^\\p{L}\\s]+", "");
-        String[] sentenceToArray = toLowerSentence.split(" ");
-        ArrayList<String> stringArrayList = new ArrayList<>(sentenceToArray.length);
-        for (String word : sentenceToArray) {
+        ArrayList<String> stringArrayList = new ArrayList<>();
 
-            stringArrayList.add("\"" + word + "\"");
+        if (sentence != null) {
+
+            String toLowerSentence = sentence.toLowerCase().replaceAll("[^\\p{L}\\s]+", "");
+            String[] sentenceToArray = toLowerSentence.split(" ");
+            stringArrayList = new ArrayList<>(sentenceToArray.length);
+            for (String word : sentenceToArray) {
+
+                stringArrayList.add("\"" + word + "\"");
+
+            }
 
         }
 

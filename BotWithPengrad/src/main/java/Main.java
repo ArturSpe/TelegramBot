@@ -1,4 +1,6 @@
-import WorkWithSql.WorkingRunBotWithJdbc;
+import WorkWithSql.DataForRunBotWithJdbc;
+import WorkWithSql.DataRunBotJdbc;
+
 import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -9,14 +11,14 @@ public class Main {
 
     public static void main(String[] args) throws Exception {
 
-        WorkingRunBotWithJdbc runBotWithJdbc = new WorkingRunBotWithJdbc("jdbc:sqlite:C:\\Users\\Artur\\Desktop\\Bot_Token_and_DB.db");
+        DataForRunBotWithJdbc runBotWithJdbc = new DataForRunBotWithJdbc("jdbc:sqlite:C:\\Users\\Artur\\Desktop\\Bot_Token_and_DB.db");
 
-        ArrayList<String[]> strings = runBotWithJdbc.getDataForBot();
-        ExecutorService executor = Executors.newFixedThreadPool(strings.size());
+        ArrayList<DataRunBotJdbc> dataSqlBots = runBotWithJdbc.getDataForBot();
+        ExecutorService executor = Executors.newFixedThreadPool(dataSqlBots.size());
 
-        for (String[] data : strings){
+        for (DataRunBotJdbc dataSqlBot : dataSqlBots){
 
-            BotRunner runner = new BotRunner(data[0],data[1]);
+            BotRunner runner = new BotRunner(dataSqlBot.getTokenBot(), dataSqlBot.getUrl());
             executor.submit(runner);
 
 

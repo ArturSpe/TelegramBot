@@ -1,5 +1,5 @@
 import Commands.CommandProcessing;
-import GettingUserData.UpdateData;
+import GettingUserData.DataFromUpdate;
 import Keyboards.InlineKeyBoardTeleBot;
 import Messages.MessageSender;
 import UserState.UserState;
@@ -12,64 +12,65 @@ public class BotRunner implements Runnable{
     private String TOKEN_BOT;
     private String DB_URL;
 
+    TelegramBot bot;
+    WorkingWithJdbc withJdbc;
+    UserState userState;
+
     public BotRunner(String token, String dbUrl){
 
         this.TOKEN_BOT = token;
         this.DB_URL = dbUrl;
+        this.bot = new TelegramBot(this.TOKEN_BOT);
+        this.withJdbc = new WorkingWithJdbc("jdbc:sqlite:" + this.DB_URL);
+        this.userState = new UserState();
 
     }
 
     public void run () {
 
-        TelegramBot bot = new TelegramBot(this.TOKEN_BOT);
-        WorkingWithJdbc withJdbc = new WorkingWithJdbc("jdbc:sqlite:" + this.DB_URL);
-        UserState userState = new UserState();
-
-        bot.setUpdatesListener(updates -> {
+        this.bot.setUpdatesListener(updates -> {
 
             updates.forEach(update -> {
 
-                UpdateData userMetaData = new UpdateData(update);
-
-                long chatId = userMetaData.getChatId();
-                long userId = userMetaData.getUserId();
-                int messageId = userMetaData.getMessageId();
+                DataFromUpdate dataFromUpdate = new DataFromUpdate(this.bot, update);
+                long chatId = dataFromUpdate.getChatId();
+                long userId = dataFromUpdate.getUserId();
+                int messageId = dataFromUpdate.getMessageId();
 
                 try {
 
                     if (update.message() != null) {
 
-                        CommandProcessing.changeStateByCommand(bot, chatId, userId, messageId, userState, update.message().text());
+                        CommandProcessing.changeStateByCommand(this.bot, dataFromUpdate, this.userState, update.message().text());
 
-                        if (update.message().text().equals("1")) {
+                        if (dataFromUpdate.getMessageText().equals("1")) {
 
                             if (userState.emptyUserState(userId)) {
                                 MessageSender messageSender = new MessageSender("Пустое состояние");
-                                messageSender.Send(bot, chatId);
+                                messageSender.Send(this.bot, chatId);
 
                             } else {
 
-                                MessageSender messageSender = new MessageSender(userState.checkState(userId).toString());
-                                messageSender.Send(bot, chatId);
+                                MessageSender messageSender = new MessageSender(this.userState.checkState(userId).toString());
+                                messageSender.Send(this.bot, chatId);
 
                             }
 
                         }
 
-                        if (update.message().text().equals("2") && userState.emptyUserState(userId)) {
+                        if (dataFromUpdate.getMessageText().equals("2") && this.userState.emptyUserState(userId)) {
 
-                            String[] key = withJdbc.getPackages();
+                            String[] key = this.withJdbc.getPackages();
                             MessageSender messageSender = new MessageSender("Клавиатура");
                             Keyboards.InlineKeyBoardTeleBot keyBoardTeleBot = new InlineKeyBoardTeleBot(key, 3);
-                            messageSender.Send(bot, chatId, keyBoardTeleBot);
+                            messageSender.Send(this.bot, chatId, keyBoardTeleBot);
 
                         }
 
-                        if (userState.emptyUserState(userId) && update.message().text() != null) {
+                        if (this.userState.emptyUserState(userId) && dataFromUpdate.getMessageText() != null) {
 
-                            String q = update.message().text();
-                            MessageSender messageSender = new MessageSender(withJdbc.getPhrase(userMetaData.getMessageText()));
-                            messageSender.Send(bot, chatId, messageId);
+                            MessageSender messageSender = new MessageSender(this.withJdbc.getPhrase(dataFromUpdate.getMessageText()));
+                            messageSender.Send(this.bot, chatId, messageId);
 
                         }
 
