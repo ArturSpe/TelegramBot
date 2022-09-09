@@ -48,11 +48,11 @@ public class DataFromUpdate {
 
                 this.messageId = this.update.callbackQuery().message().messageId();
 
-                this.userId = this.update.callbackQuery().message().from().id();
+                this.userId = this.update.callbackQuery().from().id();
 
                 if (update.callbackQuery().message().text() != null){
 
-                    this.callbackText = update.callbackQuery().message().text();
+                    this.callbackText = update.callbackQuery().data();
 
                 }
 

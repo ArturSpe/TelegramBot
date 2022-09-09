@@ -12,7 +12,7 @@ public interface IDataBaseCommands {
 
     String getPhrase (String x) throws Exception;
 
-    ArrayList<String> getPhrases () throws Exception;
+    ArrayList<String> getPhrases (String group) throws Exception;
 
     void savePackage () throws Exception;
 

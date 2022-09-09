@@ -21,25 +21,34 @@ public class WorkingWithJdbc implements IDataBaseCommands {
 
     public String[] getPackages () throws Exception {
 
-        Connection connection = getConnection();
-        PreparedStatement statement = connection.prepareStatement("SELECT package FROM packages");
-        statement.execute();
-        ResultSet resultSet = statement.getResultSet();
-        ArrayList<String>packages = new ArrayList<>();
+        try(Connection connection = getConnection()) {
 
-        if (resultSet.isBeforeFirst()){
-            while (resultSet.next()) {
 
-                packages.add(resultSet.getString(1));
+            PreparedStatement statement = connection.prepareStatement("SELECT package FROM packages");
+            statement.execute();
+            ResultSet resultSet = statement.getResultSet();
+            ArrayList<String> packages = new ArrayList<>();
+
+            if (resultSet.isBeforeFirst()) {
+                while (resultSet.next()) {
+
+                    packages.add(resultSet.getString(1));
+
+                }
 
             }
 
+            String[] pac = packages.toArray(new String[0]);
+
+            connection.close();
+            return pac;
+
+        }catch (Exception e){
+
+            String [] x = {"Что то пошло не так"};
+            return x;
+
         }
-
-        String[] pac = packages.toArray(new String[0]);
-
-        connection.close();
-        return pac;
 
     }
 
@@ -48,93 +57,106 @@ public class WorkingWithJdbc implements IDataBaseCommands {
 
         String x = wordOrPhrase.toLowerCase();
         String result = "Совпадений не обнаружено";
-        Connection connection = getConnection();
-        PreparedStatement statement = connection.prepareStatement("SELECT package from packages" +
-                                                                        "WHERE id_package = (SELECT id_package FROM words WHERE word = ?)" +
-                                                                        "OR id_package = (SELECT id_package FROM phrases WHERE phrase = ?)");
-        statement.setString(1, x);
-        statement.setString(2, x);
-        statement.execute();
-        ResultSet resultSet = statement.getResultSet();
 
-        if (resultSet.isBeforeFirst()){
+        try (Connection connection = getConnection()) {
+            PreparedStatement statement = connection.prepareStatement("SELECT package from packages" +
+                                                                            "WHERE id_package = (SELECT id_package FROM words WHERE word = ?)" +
+                                                                                "OR id_package = (SELECT id_package FROM phrases WHERE phrase = ?)");
+            statement.setString(1, x);
+            statement.setString(2, x);
+            statement.execute();
+            ResultSet resultSet = statement.getResultSet();
 
-            result = resultSet.getString(1);
+            if (resultSet.isBeforeFirst()) {
+
+                result = resultSet.getString(1);
+
+            }
+
+            connection.close();
+            return result;
+
+        }catch (Exception e){
+
+            return "Что то пошло не так";
 
         }
-
-        connection.close();
-        return result;
 
     }
 
     @Override
     public ArrayList<String> getWords (String group) throws Exception{
 
-        String x = group.toUpperCase();
-        Connection connection = getConnection();
-        PreparedStatement statement = connection.prepareStatement("SELECT word FROM words NATURAL JOIN packages WHERE package = ?");
-        statement.setString(1, x);
-        statement.execute();
-        ResultSet resultSet = statement.getResultSet();
-        ArrayList<String>words = new ArrayList<>();
+        try (Connection connection = getConnection()) {
 
-        if (resultSet.isBeforeFirst()){
-            while (resultSet.next()) {
+            String x = group.toUpperCase();
+            PreparedStatement statement = connection.prepareStatement("SELECT word FROM words NATURAL JOIN packages WHERE package = ?");
+            statement.setString(1, x);
+            statement.execute();
+            ResultSet resultSet = statement.getResultSet();
+            ArrayList<String> words = new ArrayList<>();
 
-                words.add(resultSet.getString(1));
+            if (resultSet.isBeforeFirst()) {
+                while (resultSet.next()) {
+
+                    words.add(resultSet.getString(1));
+
+                }
 
             }
 
+            return words;
         }
-
-        connection.close();
-        return words;
 
     }
 
     @Override
     public String getPhrase (String sentence) throws Exception{
 
-        String queryWords = String.join(", ", MessageToArray.messageToArrayWithApostrophes(sentence));
 
-        Connection connection = getConnection();
-        String query = "SELECT phrase FROM phrases NATURAL JOIN words WHERE word IN (" + queryWords + ") ORDER BY RANDOM() LIMIT 1";
-        Statement statement = connection.createStatement();
-        ResultSet resultSet = statement.executeQuery(query);
+        try (Connection connection = getConnection()) {
 
-        String phrase = "";
-        if (resultSet.isBeforeFirst()){
+            String queryWords = String.join(", ", MessageToArray.messageToArrayWithApostrophes(sentence));
+            String query = "SELECT phrase FROM phrases NATURAL JOIN words WHERE word IN (" + queryWords + ") ORDER BY RANDOM() LIMIT 1";
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(query);
 
-            phrase = resultSet.getString(1);
+            String phrase = "";
+            if (resultSet.isBeforeFirst()) {
 
+                phrase = resultSet.getString(1);
+
+            }
+
+            connection.close();
+            return phrase;
         }
-
-        connection.close();
-        return phrase;
 
     }
 
     @Override
-    public ArrayList<String> getPhrases () throws Exception{
+    public ArrayList<String> getPhrases (String group) throws Exception{
 
-        Connection connection = getConnection();
-        PreparedStatement statement = connection.prepareStatement("SELECT phrase FROM phrases");
-        statement.execute();
-        ResultSet resultSet = statement.getResultSet();
-        ArrayList<String>arrayListPhrases = new ArrayList<>();
+        try (Connection connection = getConnection()) {
 
-        if (resultSet.isBeforeFirst()){
-            while (resultSet.next()) {
+            String x = group.toUpperCase();
+            PreparedStatement statement = connection.prepareStatement("SELECT phrase FROM phrases NATURAL JOIN packages WHERE package = ?");
+            statement.setString(1, x);
+            statement.execute();
+            ResultSet resultSet = statement.getResultSet();
+            ArrayList<String> arrayListPhrases = new ArrayList<>();
 
-                arrayListPhrases.add(resultSet.getString(1));
+            if (resultSet.isBeforeFirst()) {
+                while (resultSet.next()) {
+
+                    arrayListPhrases.add(resultSet.getString(1));
+
+                }
 
             }
 
+            return arrayListPhrases;
         }
-
-        connection.close();
-        return arrayListPhrases;
 
     }
 
@@ -144,21 +166,27 @@ public class WorkingWithJdbc implements IDataBaseCommands {
     @Override
     public boolean saveWord (String word, String group) throws Exception {
 
-        Connection connection = getConnection();
-        connection.setAutoCommit(false);
-        PreparedStatement statement = connection.prepareStatement("INSERT INTO words VALUES ((SELECT id_package FROM packages WHERE package = ?), ?)");
-        statement.setString(1, group);
-        statement.setString(2, word);
+        try (Connection connection = getConnection()) {
 
-        if (statement.executeUpdate() == 2){
+            word = word.toLowerCase();
+            connection.setAutoCommit(false);
+            PreparedStatement statement = connection.prepareStatement("INSERT INTO words (id_package, word) VALUES ((SELECT id_package FROM packages WHERE package = ?), ?)");
+            statement.setString(1, group);
+            statement.setString(2, word);
 
-            connection.commit();
-            connection.close();
-            return true;
+            if (statement.executeUpdate() == 1) {
 
-        }else {
+                connection.commit();
+                return true;
 
-            connection.close();
+            } else {
+
+                return false;
+
+            }
+
+        }catch (Exception e){
+
             return false;
 
         }
@@ -168,21 +196,28 @@ public class WorkingWithJdbc implements IDataBaseCommands {
     @Override
     public boolean savePhrase (String phrase, String group) throws Exception {
 
-        Connection connection = getConnection();
-        connection.setAutoCommit(false);
-        PreparedStatement statement = connection.prepareStatement("INSERT INTO phrases VALUES ((SELECT id_package FROM packages WHERE package = ?), ?)");
-        statement.setString(1, group);
-        statement.setString(2, phrase);
+        try (Connection connection = getConnection()) {
 
-        if (statement.executeUpdate() == 2){
 
-            connection.commit();
-            connection.close();
-            return true;
+            connection.setAutoCommit(false);
+            PreparedStatement statement = connection.prepareStatement("INSERT INTO phrases (id_package, phrase) VALUES ((SELECT id_package FROM packages WHERE package = ?), ?)");
+            statement.setString(1, group);
+            statement.setString(2, phrase);
 
-        }else {
+            if (statement.executeUpdate() == 1) {
 
-            connection.close();
+                connection.commit();
+                return true;
+
+            } else {
+
+                return false;
+
+            }
+
+        }catch (Exception e){
+
+            e.printStackTrace();
             return false;
 
         }
