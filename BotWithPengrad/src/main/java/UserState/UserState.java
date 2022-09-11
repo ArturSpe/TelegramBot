@@ -1,19 +1,18 @@
 package UserState;
 
-import java.io.IOException;
 import java.util.HashMap;
 
 public class UserState {
 
-    private HashMap<Long, State> userStateMap = new HashMap<>();
+    private HashMap<Long, States> userStateMap = new HashMap<>();
 
-    public void setUserState (long userId, State state) {
+    public void setUserState (long userId, States state) {
 
         this.userStateMap.put(userId, state);
 
     }
 
-    public boolean checkUserState (long userId, State state) {
+    public boolean checkUserState (long userId, States state) {
 
         boolean check = false;
 
@@ -43,7 +42,7 @@ public class UserState {
 
     }
 
-    public State checkState (long userId){
+    public States checkState (long userId){
 
         return this.userStateMap.get(userId);
 

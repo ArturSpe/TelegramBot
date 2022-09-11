@@ -1,32 +1,36 @@
 package Commands;
+import GettingUserData.DataFromUpdate;
 import Messages.MessageSender;
 import UserState.*;
 import com.pengrad.telegrambot.TelegramBot;
 
-import java.io.IOException;
 
 abstract public class CommandProcessing {
 
-        public static void changeStateByCommand(TelegramBot bot, long chatId, long userId,  int messageId, UserState userState, String command) {
+        public static void changeStateByCommand(TelegramBot bot, DataFromUpdate updateData, UserState userState, String command) {
 
-        if (BotCommands.thisCommand(command, "/append_word") == true){
+            if (command != null) {
+                command = command.replaceAll("@" + updateData.botData().username(), "");
 
-            userState.setUserState(userId, State.checkGroupsWord);
+                if (BotCommands.thisCommand(command, "/append_word")) {
 
-        } else if (BotCommands.thisCommand(command, "/append_phrase") == true) {
+                    userState.setUserState(updateData.getUserId(), States.checkGroupsWord);
 
-            userState.setUserState(userId, State.checkGroupsPhrase);
+                } else if (BotCommands.thisCommand(command, "/append_phrase")) {
 
-        } else if (BotCommands.thisCommand(command, "/end")) {
+                    userState.setUserState(updateData.getUserId(), States.checkGroupsPhrase);
 
-            MessageSender messageSender = new MessageSender("Бот работает");
-            messageSender.Send(bot, chatId, messageId);
+                } else if (BotCommands.thisCommand(command, "/end")) {
 
-            userState.clearUserState(userId);
+                    MessageSender messageSender = new MessageSender("Бот работает");
+                    messageSender.Send(bot, updateData.getChatId(), updateData.getMessageId());
+
+                    userState.clearUserState(updateData.getUserId());
+
+                }
+
+            }
 
         }
-
-    }
-
 
 }
