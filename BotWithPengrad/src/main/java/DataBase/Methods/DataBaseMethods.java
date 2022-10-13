@@ -1,8 +1,8 @@
-package WorkWithSql;
+package WorkWithSql.Methods;
 
 import java.util.ArrayList;
 
-public interface IDataBaseCommands {
+public interface DataBaseMethods {
 
     String getPackage (String x) throws Exception;
 

@@ -1,34 +1,38 @@
-package WorkWithSql;
+package DataBase.DataForRunBot.JDBC;
+
+import DataBase.DataForRunBot.ReturnerBots;
+import DataBase.Methods.JDBC.DataBaseMethodsJdbc;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.List;
 
-public class DataForRunBotWithJdbc implements IDataBaseRunBot {
+public class ReturnerBotJDBC implements ReturnerBots {
 
     private String dbWithBotsUrl;
 
 
-    public DataForRunBotWithJdbc(String dbWithBotsUrl){
+    public ReturnerBotJDBC(String dbWithBotsUrl){
 
         this.dbWithBotsUrl = dbWithBotsUrl;
 
     }
     @Override
-    public ArrayList <DataRunBotJdbc> getDataForBot() throws Exception{
+    public List<? extends BotJdbc> getBot() throws Exception{
 
-        WorkingWithJdbc withJdbc = new WorkingWithJdbc(dbWithBotsUrl);
+        DataBaseMethodsJdbc withJdbc = new DataBaseMethodsJdbc(dbWithBotsUrl);
         Connection connection = withJdbc.getConnection();
         PreparedStatement statement = connection.prepareStatement("SELECT * FROM BotTokenAndDB");
         statement.execute();
         ResultSet resultSet = statement.getResultSet();
 
-        ArrayList<DataRunBotJdbc> listArrayList = new ArrayList<>();
+        ArrayList<BotJdbc> listArrayList = new ArrayList<>();
 
         while (resultSet.next()){
 
-            DataRunBotJdbc dataSqlBot = new DataRunBotJdbc(resultSet.getString(2), resultSet.getString(3));
+            BotJdbcImpl dataSqlBot = new BotJdbcImpl(resultSet.getString(2), resultSet.getString(3));
             listArrayList.add(dataSqlBot);
 
         }

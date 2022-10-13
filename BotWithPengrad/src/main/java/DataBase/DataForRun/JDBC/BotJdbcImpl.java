@@ -1,11 +1,11 @@
-package WorkWithSql;
+package DataBase.DataForRunBot.JDBC;
 
-public class DataRunBotJdbc {
+public class BotJdbcImpl implements BotJdbc {
 
     private String tokenBot;
     private String url;
 
-    protected DataRunBotJdbc(String tokenBot, String url){
+    protected BotJdbcImpl(String tokenBot, String url){
 
         this.tokenBot = tokenBot;
         this.url = url;

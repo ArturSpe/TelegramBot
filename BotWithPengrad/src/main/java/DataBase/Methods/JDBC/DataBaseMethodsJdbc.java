@@ -1,13 +1,14 @@
-package WorkWithSql;
+package WorkWithSql.Methods.JDBC;
 import Messages.MessageToArray;
+import WorkWithSql.Methods.DataBaseMethods;
 
 import java.sql.*;
 import java.util.ArrayList;
 
-public class WorkingWithJdbc implements IDataBaseCommands {
+public class DataBaseMethodsJDBC implements DataBaseMethods {
     private String URL_DATABASE = new String();
 
-    public WorkingWithJdbc(String url){
+    public DataBaseMethodsJDBC(String url){
 
         this.URL_DATABASE = url;
 
