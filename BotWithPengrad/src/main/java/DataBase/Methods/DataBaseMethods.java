@@ -1,6 +1,8 @@
-package WorkWithSql.Methods;
+package DataBase.Methods;
 
-import java.util.ArrayList;
+import DataBase.Methods.Hibernate.Entity.Words;
+
+import java.util.List;
 
 public interface DataBaseMethods {
 
@@ -8,11 +10,11 @@ public interface DataBaseMethods {
 
     String[] getPackages () throws Exception;
 
-    ArrayList<String> getWords (String group) throws Exception;
+    List<String> getWords (String group) throws Exception;
 
     String getPhrase (String x) throws Exception;
 
-    ArrayList<String> getPhrases (String group) throws Exception;
+    List<String> getPhrases (String group) throws Exception;
 
     void savePackage () throws Exception;
 

@@ -1,4 +1,4 @@
-package DataBase.DataForRunBot.JDBC;
+package DataBase.DataForRun.JDBC;
 
 public class BotJdbcImpl implements BotJdbc {
 

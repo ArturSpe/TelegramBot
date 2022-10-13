@@ -1,14 +1,16 @@
-package WorkWithSql.Methods.JDBC;
+package DataBase.Methods.JDBC;
+import DataBase.Methods.Hibernate.Entity.Words;
 import Messages.MessageToArray;
-import WorkWithSql.Methods.DataBaseMethods;
+import DataBase.Methods.DataBaseMethods;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.List;
 
-public class DataBaseMethodsJDBC implements DataBaseMethods {
+public class DataBaseMethodsJdbc implements DataBaseMethods {
     private String URL_DATABASE = new String();
 
-    public DataBaseMethodsJDBC(String url){
+    public DataBaseMethodsJdbc(String url){
 
         this.URL_DATABASE = url;
 
@@ -86,7 +88,7 @@ public class DataBaseMethodsJDBC implements DataBaseMethods {
     }
 
     @Override
-    public ArrayList<String> getWords (String group) throws Exception{
+    public List<String> getWords (String group) throws Exception{
 
         try (Connection connection = getConnection()) {
 
@@ -95,7 +97,7 @@ public class DataBaseMethodsJDBC implements DataBaseMethods {
             statement.setString(1, x);
             statement.execute();
             ResultSet resultSet = statement.getResultSet();
-            ArrayList<String> words = new ArrayList<>();
+            List<String> words = new ArrayList<>();
 
             if (resultSet.isBeforeFirst()) {
                 while (resultSet.next()) {

@@ -1,6 +1,6 @@
-package DataBase.DataForRunBot.JDBC;
+package DataBase.DataForRun.JDBC;
 
-import DataBase.DataForRunBot.ReturnerBots;
+import DataBase.DataForRun.ReturnerBots;
 import DataBase.Methods.JDBC.DataBaseMethodsJdbc;
 
 import java.sql.Connection;

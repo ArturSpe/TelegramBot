@@ -1,4 +1,4 @@
-package DataBase.DataForRunBot;
+package DataBase.DataForRun;
 
 import java.util.List;
 

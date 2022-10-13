@@ -16,27 +16,22 @@ public class MessageSender {
 
 
     public MessageSender (String message) {
-
         this.message = message;
-
     }
 
     public SendResponse Send (TelegramBot bot, long chatId){
-
         this.message1 = new SendMessage(chatId, this.message);
         return bot.execute(message1);
 
     }
 
     public void Send (TelegramBot bot, long chatId, int messageId){
-
         this.message1 = new SendMessage(chatId, this.message);
         bot.execute(message1.replyToMessageId(messageId));
 
     }
 
     public void Send (TelegramBot bot, long chatId, InlineKeyBoardTeleBot keyboardMarkup){
-
         this.message1 = new SendMessage(chatId, this.message);
         bot.execute(message1.replyMarkup(keyboardMarkup.getKeyboard()));
 

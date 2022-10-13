@@ -38,15 +38,11 @@ public class InlineKeyBoardTeleBot{
             keyboardButtons[numberOfIterations] = buttonsInLineArray;
             numberOfIterations++;
         }
-
         this.keyboard = new InlineKeyboardMarkup(keyboardButtons);
-
     }
 
     public InlineKeyboardMarkup getKeyboard() {
-
         return this.keyboard;
-
     }
 
 }
