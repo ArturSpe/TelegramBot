@@ -11,20 +11,12 @@ abstract public class GetMessageId {
         messageId = 0;
 
         if (update != null){
-
             if (update.message() != null){
-
                 messageId = update.message().messageId();
-
             } else if (update.callbackQuery() != null) {
-
                 messageId = update.callbackQuery().message().messageId();
-
             }
-
         }
-
         return messageId;
     }
-
 }
